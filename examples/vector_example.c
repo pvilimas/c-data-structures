@@ -1,4 +1,4 @@
-#include "vector.h"
+#include "../vector.h"
 
 #include <stdio.h>
 
@@ -28,7 +28,7 @@ int main() {
 
 	// vector_is_empty can be used in a loop:
 	while(!vector_is_empty(a)) {
-		printf("popped %d\n", vector_pop(a).x);
+		printf("%d\n", vector_pop(a).x);
 	}
 
 	// to iterate over the vector, the vector_size macro can be used:

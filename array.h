@@ -10,7 +10,8 @@
 	This is a very simple static array class in C.
 
 	The type array(T) is defined as T* so you can read and write elements
-	directly, see array_example.c.
+	directly, see array_example.c. Just like with pointers, there is no bounds
+	checking.
 
 	Properties:
 

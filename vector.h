@@ -8,7 +8,7 @@
 
 /*
 
-	This is a very simple vector class in C. Only the basic functions are
+	This is a simple vector class in C. Only the basic functions are
 	provided and there is no error checking or bounds checking (for example if
 	you call vector_pop or access v[5] when the vector is empty). There are no
 	iterator functions or anything like that, just use a loop with vector_size().
