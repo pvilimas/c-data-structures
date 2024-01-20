@@ -7,20 +7,20 @@
 
 /*
 
-	This is a very simple static array class in C.
+This is a very simple static array class in C.
 
-	The type array(T) is defined as T* so you can read and write elements
-	directly, see array_example.c.
+The type array(T) is defined as T* so you can read and write elements
+directly, see array_example.c.
 
-	Properties:
+Properties:
 
-	array_size(a) -> size_t			-- Returns the size of the array
-	array_elemsize(a) -> size_t		-- Returns sizeof(T)
+array_size(a) -> size_t			-- Returns the size of the array
+array_elemsize(a) -> size_t		-- Returns sizeof(T)
 
-	Methods:
+Methods:
 
-	array_new(T, s) -> array(T)		-- Creates a new array with size s
-	array_free(a)					-- Frees all memory in the array
+array_new(T, s) -> array(T)		-- Creates a new array with size s
+array_free(a)					-- Frees all memory in the array
 	
 */
 
