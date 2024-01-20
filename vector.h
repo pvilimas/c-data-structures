@@ -18,17 +18,17 @@
 
 	Properties:
 
-	vector_size(v) -> size_t		-- Returns the size of the vector
-	vector_cap(v) -> size_t			-- Returns the capacity of the vector
-	vector_elemsize(v) -> size_t	-- Returns sizeof(T)
+	vector_size(v) -> size_t			-- Returns the size of the vector
+	vector_cap(v) -> size_t				-- Returns the capacity of the vector
+	vector_elemsize(v) -> size_t		-- Returns sizeof(T)
 
 	Methods:
 
-	vector_new(T) -> vector(T)		-- Creates a new vector
-	vector_free(v)					-- Frees all memory in the vector
-	vector_push(v, T) -> T 			-- Push a value and return it
-	vector_pop(v) -> T 				-- Pop a value and return it
-	vector_is_empty(v) -> bool		-- Is the vector empty?
+	vector_new(T) -> vector(T)			-- Creates a new vector
+	vector_free(v)						-- Frees all memory in the vector
+	vector_push(v, T) -> T 				-- Push a value and return it
+	vector_pop(v) -> T 					-- Pop a value and return it
+	vector_is_empty(v) -> bool			-- Is the vector empty?
 	
 */
 
