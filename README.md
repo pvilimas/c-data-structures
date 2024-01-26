@@ -8,5 +8,5 @@
 - What's useful about these?
 	- They only have the minimal functions you would need, anything else can be done by looping through them
 	- No need for `init_vector(T);` style macros
-	- In vector and array you can index elements directly, no need for `vec_set(v, 0, 5)` stuff either
+	- In vector and array you can index elements directly just like a pointer, no need for `vec_set(v, 0, 5)` stuff either - `v[0] = 5`
 	- Fully generic, you can put whatever you want in them, not limited to storing pointers

@@ -3,17 +3,17 @@
 #include <stdio.h>
 
 typedef struct {
-	char* s;
+	const char* s;
 	int x;
 } MyStruct;
 
 int main() {
 
-	// these are both valid declarations:
+	// this is a valid declaration:
 	map(MyStruct) a = map_new(MyStruct);
-	MyStruct* b = map_new(MyStruct);
 
-	// but this will not work:
+	// but these are not:
+	// MyStruct* b = map_new(MyStruct);
 	// void* c = map_new(MyStruct);
 
 	// map_insert and map_get return the associated value:
@@ -50,7 +50,8 @@ int main() {
 		// the iterator stuff only gives you keys, but you can easily get values:
 		MyStruct value = map_get(a, key);
 		printf("got key '%s' and value %d\n", key, value.x);
-	}	
+	}
+	// map_iter_next_key will safely return NULL if there are no more keys
 
 	map_free(a);
 	// map_free(b);
