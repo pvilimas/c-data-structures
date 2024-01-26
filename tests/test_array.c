@@ -1,4 +1,4 @@
-#include "array.h"
+#include "../array.h"
 
 typedef struct {
 	int x;
@@ -13,6 +13,7 @@ char* strings[] = {
 
 int main() {
 	array(st) a = array_new(st, 3);
+	
 	for (int i = 0; i < (int) array_size(a); i++) {
 		a[i] = (st){ .x = i, .c = strings[i] };
 	}

@@ -36,7 +36,7 @@ int main() {
 	for (size_t i = 0; i < SIZE; i++) {
 		assert(map_contains(m, str + i));
 		assert(map_get(m, str + i).y == (int)i + 7);
-		if (i % 100 == 0) {
+		if (i % 100 > 3) {
 			map_remove(m, str + i);
 		} else if (i % 100 == 3) {
 			map_insert(m, str + i,
@@ -45,7 +45,8 @@ int main() {
 	}
 
 	for (size_t i = 0; i < SIZE; i++) {
-		if (i % 100 == 0) {
+		if (i % 100 > 3) {
+			assert(!map_contains(m, str + i));
 			assert(map_find(m, str + i) == NULL);
 		} else if (i % 100 == 3) {
 			assert(map_contains(m, str + i));

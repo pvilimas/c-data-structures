@@ -27,9 +27,12 @@
 #define array(T) T*
 
 #define array_elemsize(dptr) \
-	(*(((size_t*) (dptr)) - 2))
+	(*(((size_t*) (dptr)) - 3))
 
 #define array_size(dptr) \
+	(*(((size_t*) (dptr)) - 2))
+
+#define array_mode(dptr) \
 	(*(((size_t*) (dptr)) - 1))
 
 #define array_new(T, sz) \
@@ -64,8 +67,17 @@ static inline void* f_array_new(size_t esz, size_t sz) {
     return i_array_h2d(hptr); // return dptr
 }
 
+static inline void* f_array_from(size_t esz, size_t sz) {
+	// allocate header + data
+	size_t total_size = (sizeof(size_t) * 2) + (esz * sz);
+	size_t* hptr = malloc(total_size);
+    hptr[0] = esz;
+    hptr[1] = sz;
+    return i_array_h2d(hptr); // return dptr
+}
+
 static inline void f_array_free(void* dptr) {
-	free(i_array_d2h(dptr)); 
+	free(i_array_d2h(dptr));
 }
 
 #endif // ARRAY_H

@@ -25,18 +25,18 @@
 
 	Methods:
 
-	map_new(V) -> map<const char*, V>   -- Creates a new map
-	map_free(m)							-- Frees all memory in the map
-	map_insert(m, k, v) -> V 			-- Insert a key-value pair into the map
-	map_contains(m, k) -> bool			-- Is this key contained in the map?
-	map_get(m, k) -> V 					-- Get the value (MUST BE IN THE MAP)
-	map_find(m, k) -> V*				-- Get a ptr to the value (or NULL)
-	map_remove(m, k)					-- Remove the key from the map
+	map_new(V) -> map<const char*, V>   -- Create a new map
+	map_free(m)                         -- Free all memory in the map
+	map_insert(m, k, v) -> V            -- Insert a key-value pair into the map
+	map_contains(m, k) -> bool          -- Is this key contained in the map?
+	map_get(m, k) -> V                  -- Get the value (MUST BE IN THE MAP)
+	map_find(m, k) -> V*                -- Get a ptr to the value (or NULL)
+	map_remove(m, k)                    -- Remove the key from the map
 
 	Iteration:
 
-	map_iter_start(m)					-- Start iterating over the map
-	map_iter_has_next(m) -> bool		-- Are there any entries left?
+	map_iter_start(m)                   -- Start iterating over the map
+	map_iter_has_next(m) -> bool        -- Are there any entries left?
 	map_iter_next_key(m) -> const char* -- Get the next key in the map
 
 */
@@ -112,7 +112,7 @@ typedef struct {
 #define i_map_v2h(vptr) \
 	((i_map_header*)((char*)(vptr) - offsetof(i_map_header, values)))
 
-static uint32_t f_str_hash(const char* str) {
+static inline uint32_t f_str_hash(const char* str) {
     uint32_t hash = 5381;
     int c;
     while ((c = *str++) != 0) {
@@ -121,7 +121,7 @@ static uint32_t f_str_hash(const char* str) {
     return hash;
 }
 
-static void** f_map_new(size_t cap, size_t size, size_t vsize) {
+static inline void** f_map_new(size_t cap, size_t size, size_t vsize) {
 	i_map_header* hp = malloc(sizeof(i_map_header));
 	*hp = (i_map_header) {
 		.cap = cap,
@@ -135,7 +135,7 @@ static void** f_map_new(size_t cap, size_t size, size_t vsize) {
 	return i_map_h2v(hp);
 }
 
-static void f_map_free(i_map_header* hp) {
+static inline void f_map_free(i_map_header* hp) {
 	free(hp->flags);
 	free(hp->hashes);
 	free(hp->keys);
@@ -144,7 +144,7 @@ static void f_map_free(i_map_header* hp) {
 }
 
 // returns new ptr
-static i_map_header* f_map_try_rehash(i_map_header* hp) {
+static inline i_map_header* f_map_try_rehash(i_map_header* hp) {
 	if (hp->size < MAP_MAX_LOAD * hp->cap) {
 		return hp;
 	}
@@ -192,7 +192,7 @@ static i_map_header* f_map_try_rehash(i_map_header* hp) {
     return new_hp;
 }
 
-static size_t f_map_insert(i_map_header* hp, const char* k) {
+static inline size_t f_map_insert(i_map_header* hp, const char* k) {
     uint32_t k_hash = f_str_hash(k);
     size_t index = k_hash % hp->cap;
 
@@ -215,7 +215,7 @@ static size_t f_map_insert(i_map_header* hp, const char* k) {
 	return index;
 }
 
-static bool f_map_contains(i_map_header* hp, const char* k) {
+static inline bool f_map_contains(i_map_header* hp, const char* k) {
 	uint32_t k_hash = f_str_hash(k);
 	size_t index = k_hash % hp->cap;
 
@@ -230,7 +230,7 @@ static bool f_map_contains(i_map_header* hp, const char* k) {
 	return false;
 }
 
-static int f_map_get(i_map_header* hp, const char* k) {
+static inline int f_map_get(i_map_header* hp, const char* k) {
 	uint32_t k_hash = f_str_hash(k);
 	size_t index = k_hash % hp->cap;
 
@@ -245,7 +245,7 @@ static int f_map_get(i_map_header* hp, const char* k) {
 	return -1;
 }
 
-static void f_map_remove(i_map_header* hp, const char* k) {
+static inline void f_map_remove(i_map_header* hp, const char* k) {
 	uint32_t k_hash = f_str_hash(k);
 	size_t index = k_hash % hp->cap;
 
@@ -259,12 +259,12 @@ static void f_map_remove(i_map_header* hp, const char* k) {
 	}
 }
 
-static void f_map_iter_start(i_map_header* hp) {
+static inline void f_map_iter_start(i_map_header* hp) {
 	hp->iter_index = 0;
 	hp->iter_has_next = true;
 }
 
-static bool f_map_iter_has_next(i_map_header* hp) {
+static inline bool f_map_iter_has_next(i_map_header* hp) {
 	if (!hp->iter_has_next) {
 		return false;
 	}
@@ -277,7 +277,7 @@ static bool f_map_iter_has_next(i_map_header* hp) {
 	return false;
 }
 
-static const char* f_map_iter_next_key(i_map_header* hp) {
+static inline const char* f_map_iter_next_key(i_map_header* hp) {
 	if (!hp->iter_has_next) {
 		return NULL;
 	}
