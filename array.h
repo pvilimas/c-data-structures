@@ -16,7 +16,6 @@
 	Properties:
 
 	array_size(a) -> size_t             -- Returns the size of the array
-	array_elemsize(a) -> size_t         -- Returns sizeof(T)
 
 	Methods:
 

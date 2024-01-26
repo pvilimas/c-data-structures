@@ -22,7 +22,6 @@
 
 	vector_size(v) -> size_t            -- Returns the size of the vector
 	vector_cap(v) -> size_t             -- Returns the capacity of the vector
-	vector_elemsize(v) -> size_t        -- Returns sizeof(T)
 
 	Methods:
 
