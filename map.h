@@ -21,7 +21,7 @@
 
 	Properties:
 
-	map_size(m) -> size_t            	-- Returns the size of the map
+	map_size(m) -> size_t               -- Returns the size of the map
 
 	Methods:
 
