@@ -1,354 +1,296 @@
 #ifndef MAP_H
 #define MAP_H
 
+#include <limits.h>
 #include <stdbool.h>
-#include <stdint.h>
-#include <stdio.h>
+#include <stddef.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
+#include <stdio.h>
 
-#define BREAKPOINT()                \
-    printf("breakpoint @ %s:%d\n",  \
-    (strrchr((__FILE__), '/')       \
-    ? strrchr((__FILE__), '/') + 1  \
-    : (__FILE__)), __LINE__)
+/*
+
+	map.h - generic hashmap with string keys
+
+	Keys must be const char* (string literals), value can be any type. Before 
+	calling map_get, ensure the key is in the map (using map_contains) or it
+	might segfault. map_find will safely return NULL if the value is not found
+	however. Iteration order is basically random. For more details look at
+	map_example.c.
+
+	Properties:
+
+	map_size(m) -> size_t            	-- Returns the size of the map
+
+	Methods:
+
+	map_new(V) -> map<const char*, V>   -- Creates a new map
+	map_free(m)							-- Frees all memory in the map
+	map_insert(m, k, v) -> V 			-- Insert a key-value pair into the map
+	map_contains(m, k) -> bool			-- Is this key contained in the map?
+	map_get(m, k) -> V 					-- Get the value (MUST BE IN THE MAP)
+	map_find(m, k) -> V*				-- Get a ptr to the value (or NULL)
+	map_remove(m, k)					-- Remove the key from the map
+
+	Iteration:
+
+	map_iter_start(m)					-- Start iterating over the map
+	map_iter_has_next(m) -> bool		-- Are there any entries left?
+	map_iter_next_key(m) -> const char* -- Get the next key in the map
+
+*/
+
+#define map(V) V**
+
+#define map_size(vp) \
+	(i_map_v2h((vp))->size)
+
+#define map_new(V) \
+	(V**) f_map_new(MAP_INITIAL_CAP, 0, sizeof(V))
+
+#define map_free(vp) \
+	f_map_free(i_map_v2h((vp)))
+
+#define map_insert(vp, k, ...) \
+	(*(void***)(&(vp)) = (void**)i_map_h2v(f_map_try_rehash(i_map_v2h((vp)))), \
+	(*(vp))[f_map_insert(i_map_v2h((vp)), (k))] = (__VA_ARGS__))
+
+#define map_contains(vp, k) \
+	f_map_contains(i_map_v2h((vp)), (k))
+
+#define map_get(vp, k) \
+	(*(vp))[f_map_get(i_map_v2h((vp)), (k))]
+
+#define map_find(vp, k)													\
+	((i_map_v2h(vp)->last_get_index = f_map_get(i_map_v2h((vp)), (k))), \
+	((i_map_v2h(vp)->last_get_index != -1) 								\
+		? ((*vp) + i_map_v2h(vp)->last_get_index)						\
+		: NULL))
+
+#define map_remove(vp, k) \
+	f_map_remove(i_map_v2h((vp)), (k))
+
+#define map_iter_start(vp) \
+	f_map_iter_start(i_map_v2h((vp)))
+
+#define map_iter_has_next(vp) \
+	f_map_iter_has_next(i_map_v2h((vp)))
+
+#define map_iter_next_key(vp) \
+	f_map_iter_next_key(i_map_v2h((vp)))
+
+// internal stuff
 
 #define MAP_MAX_LOAD 		0.75
-#define MAP_RESIZE_FACTOR 	3
+#define MAP_RESIZE_FACTOR 	4
 #define MAP_INITIAL_CAP 	10
 
-#define MAP_FLAG_OPEN	 	0
-#define MAP_FLAG_DELETED	1
+#define MAP_FLAG_OPEN 		0
+#define MAP_FLAG_DELETED 	1
 #define MAP_FLAG_FULL		2
 
-// #define map(V) int*
-// typedef void* map;
-
+// memory layout
 typedef struct {
-	size_t 	iter_index;	// <-- hptr
-	size_t 	elemsize;
-	size_t 	size;
-	size_t 	cap;
-	int* 	values; // <-- ptr that is passed around
-	char** 	keys;
-	size_t*	flags;
-} map;
+	size_t 			cap;
+	size_t 			size;
+	size_t 			vsize;
+	size_t 			iter_has_next;
+	size_t 			iter_index;
+	int 			last_get_index;
+	uint8_t* 		flags;
+	uint32_t* 		hashes;
+	const char** 	keys;
+	void* 			values; // <-- vptr
+} i_map_header;
 
-// public interface
+// header* -> void**
+#define i_map_h2v(hptr) \
+	(void**)((char*)(hptr) + offsetof(i_map_header, values))
 
-#define map_new() \
-	f_map_new()
+// V** -> header*
+#define i_map_v2h(vptr) \
+	((i_map_header*)((char*)(vptr) - offsetof(i_map_header, values)))
 
-#define map_new_size(initial_cap) \
-	f_map_new_size(initial_cap)
-
-#define map_copy(m) \
-	f_map_copy(m)
-
-#define map_free(m) \
-	f_map_free(m)
-
-#define map_contains(m, k) \
-	f_map_contains(m, k)
-
-#define map_get(m, k) \
-	f_map_get(m, k)
-
-#define map_set(m, k, v) \
-	f_map_set(m, k, v)
-
-#define map_delete(m, k) \
-	f_map_delete(m, k)
-
-#define map_iter_start(m) \
-	f_map_iter_start(m)
-
-#define map_iter_has_next(m) \
-	f_map_iter_has_next(m)
-
-#define map_iter_next_key(m) \
-	f_map_iter_next_key(m)
-
-// functions
-
-uint32_t	f_map_str_hash(const char* str);
-
-map		 	f_map_new();
-map 		f_map_new_size(size_t initial_cap);
-map 		f_map_copy(map* m);
-void 		f_map_free(map* m);
-
-bool		f_map_contains(map* m, char* k);
-int* 		f_map_get(map* m, char* k);
-void 		f_map_set(map* m, char* k, int v);
-void		f_map_delete(map* m, char* k);
-
-void		f_map_iter_start(map* m);
-bool		f_map_iter_has_next(map* m);
-char*		f_map_iter_next_key(map* m);
-
-void 		f_map_rehash(map* m, size_t new_cap);
-
-// internal macros for getting map fields from the dptr
-
-#define map_iter_index(dptr) \
-	(*(((size_t*) (dptr)) - 4))
-
-#define map_elemsize(dptr) \
-	(*(((size_t*) (dptr)) - 3))
-
-#define map_size(dptr) \
-	(*(((size_t*) (dptr)) - 2))
-
-#define map_cap(dptr) \
-	(*(((size_t*) (dptr)) - 1))
-
-#define map_values(dptr) \
-	(dptr)
-
-#define map_keys(dptr) \
-	(*(((char***) (dptr)) + 1))
-
-#define map_flags(dptr) \
-	(*(((size_t**) (dptr)) + 2))
-
-// implementation
-
-uint32_t f_map_str_hash(const char *str) {
+static uint32_t f_str_hash(const char* str) {
     uint32_t hash = 5381;
     int c;
-    while ((c = *str++)) {
+    while ((c = *str++) != 0) {
         hash = ((hash << 5) + hash) + c;
     }
     return hash;
 }
 
-map f_map_new() {
-    return f_map_new_size(MAP_INITIAL_CAP);
+static void** f_map_new(size_t cap, size_t size, size_t vsize) {
+	i_map_header* hp = malloc(sizeof(i_map_header));
+	*hp = (i_map_header) {
+		.cap = cap,
+		.size = size,
+		.vsize = vsize,
+		.flags = calloc(cap, sizeof(uint8_t)),
+		.hashes = calloc(cap, sizeof(uint32_t)),
+		.keys = malloc(cap * sizeof(const char*)),
+		.values = malloc(cap * vsize)
+	};
+	return i_map_h2v(hp);
 }
 
-map f_map_new_size(size_t initial_cap) {
+static void f_map_free(i_map_header* hp) {
+	free(hp->flags);
+	free(hp->hashes);
+	free(hp->keys);
+	free(hp->values);
+	free(hp);
+}
 
-	map m = {
-    	.iter_index = 0,
-    	.elemsize = sizeof(int),
-    	.cap = initial_cap,
-    	.keys = malloc(initial_cap * sizeof(char*)),
-    	.values = malloc(initial_cap * sizeof(int)),
-    	.flags = malloc(initial_cap * sizeof(size_t))
+// returns new ptr
+static i_map_header* f_map_try_rehash(i_map_header* hp) {
+	if (hp->size < MAP_MAX_LOAD * hp->cap) {
+		return hp;
+	}
+
+    size_t new_cap = hp->cap * MAP_RESIZE_FACTOR;
+	i_map_header* new_hp = malloc(sizeof(i_map_header));
+	*new_hp = (i_map_header) {
+		.cap = new_cap,
+		.size = hp->size,
+		.vsize = hp->vsize,
+		.flags = calloc(new_cap, sizeof(uint8_t)),
+		.hashes = calloc(new_cap, sizeof(uint32_t)),
+		.keys = malloc(new_cap * sizeof(const char*)),
+		.values = malloc(new_cap * hp->vsize)
 	};
 
-    for (size_t i = 0; i < initial_cap; ++i) {
-    	m.flags[i] = MAP_FLAG_OPEN;
-    	m.keys[i] = NULL;
+    for (size_t i = 0; i < hp->cap; i++) {
+        if (hp->flags[i] != MAP_FLAG_FULL) {
+            continue;
+        }
+
+        uint32_t k_hash = hp->hashes[i];
+        size_t index = k_hash % new_cap;
+
+        while (new_hp->flags[index] == MAP_FLAG_FULL) {
+            index = (index + 1) % new_cap;
+        }
+
+        new_hp->flags[index] = hp->flags[i];
+        new_hp->hashes[index] = hp->hashes[i];
+        new_hp->keys[index] = hp->keys[i];
+        // new_values[index] = hp->values[i];
+        memcpy(
+        	((char*)new_hp->values) + (index * hp->vsize),
+        	((char*)hp->values) + (i * hp->vsize),
+        	hp->vsize
+        );
     }
 
-    return m;
+	free(hp->flags);
+	free(hp->hashes);
+	free(hp->keys);
+	free(hp->values);
+	free(hp);
+    return new_hp;
 }
 
-// deep copies keys
-map f_map_copy(map* m) {
+static size_t f_map_insert(i_map_header* hp, const char* k) {
+    uint32_t k_hash = f_str_hash(k);
+    size_t index = k_hash % hp->cap;
 
-	map m2 = {
-		.iter_index = 0,
-		.elemsize = m->elemsize,
-		.cap = m->cap,
-		.keys = malloc(m->cap * sizeof(char*)),
-		.values = malloc(m->cap * sizeof(int)),
-		.flags = malloc(m->cap * sizeof(size_t))	
-	};
+    while (hp->flags[index] == MAP_FLAG_FULL) {
+        if (hp->hashes[index] == k_hash) {
+            // replace existing
+            // hp->values[index] = v;
+            return index;
+        }
 
-	for (size_t i = 0; i < m->cap; i++) {
-		if (m2.flags[i] == MAP_FLAG_FULL) {
-			m2.keys[i] = strdup(m2.keys[i]);
-		}
-	}
-
-    memcpy(m2.values, m->values, m->cap * m->elemsize);
-    memcpy(m2.flags, m->flags, m->cap * sizeof(size_t));
-
-    return m2;
-}
-
-void f_map_free(map* m) {
-    for (size_t i = 0; i < m->cap; ++i) {
-    	if (m->flags[i] == MAP_FLAG_FULL) {
-        	free(m->keys[i]);
-    	}
+        index = (index + 1) % hp->cap;
     }
-    free(m->flags);
-    free(m->keys);
-    free(m->values);
-    free(m);
+
+	// insert new
+    hp->size++;
+	hp->flags[index] = MAP_FLAG_FULL;
+	hp->hashes[index] = k_hash;
+	hp->keys[index] = k;
+	// hp->values[index] = v;
+	return index;
 }
 
-bool f_map_contains(map* m, char* k) {
-    uint32_t key_hash = f_map_str_hash(k);
-    size_t index = key_hash % m->cap;
+static bool f_map_contains(i_map_header* hp, const char* k) {
+	uint32_t k_hash = f_str_hash(k);
+	size_t index = k_hash % hp->cap;
 
-    for (size_t i = 0; i < m->cap; ++i) {
-        if (m->flags[index] == MAP_FLAG_FULL
-        && !strcmp(m->keys[index], k)) {
-            return true;
-        } else if (m->flags[index] == MAP_FLAG_OPEN) {
-            return false;
-        }
-
-        index++;
-        index = index % m->cap;
-	}
-
-    return false;
-}
-
-int* f_map_get(map* m, char* k) {
-    uint32_t key_hash = f_map_str_hash(k);
-    size_t index = key_hash % m->cap;
-
-    for (size_t i = 0; i < m->cap; ++i) {
-        if (m->flags[index] == MAP_FLAG_FULL
-        && !strcmp(m->keys[index], k)) {
-            return &((int*)m)[index];
-        } else if (m->flags[index] == MAP_FLAG_OPEN) {
-            return NULL;
-        }
-
-        index++;
-        index = index % m->cap;
-	}
-
-    return NULL;
-}
-
-void f_map_set(map* m, char* k, int v) {
-	uint32_t key_hash = f_map_str_hash(k);
-	size_t index = key_hash % m->cap;
-
-	// rehash?
-	if (m->size > MAP_MAX_LOAD * m->cap) {
-		size_t new_cap = MAP_RESIZE_FACTOR * m->cap;
-		f_map_rehash(m, new_cap);
-		index = key_hash % new_cap;
-	}
-
-	for (size_t i = 0; i < m->cap; i++) {
-		size_t flag = m->flags[index];
-		if (flag == MAP_FLAG_OPEN
-			|| flag == MAP_FLAG_DELETED
-			|| (flag == MAP_FLAG_FULL && !strcmp(m->keys[index], k)))
-		{
-			m->flags[index] = MAP_FLAG_FULL;
-			free(m->keys[index]);
-			m->keys[index] = strdup(k); // freed in delete()
-			m->values[index] = v;
-			m->size++;
-			return;
-		}
-		index++;
-		index = index % m->cap;
-	}
-}
-
-void f_map_delete(map* m, char* k) {
-    uint32_t key_hash = f_map_str_hash(k);
-    size_t index = key_hash % m->cap;
-
-    for (size_t i = 0; i < m->cap; ++i) {
-        if (m->flags[index] == MAP_FLAG_FULL
-        && strcmp(m->keys[index], k) == 0){
-            m->flags[index] = MAP_FLAG_DELETED;
-            m->size--;
-            free(m->keys[index]);
-            return;
-        } else if (m->flags[index] == MAP_FLAG_OPEN) {
-            return;
-        }
-
-        index++;
-        index = index % m->cap;
-	}
-}
-
-void f_map_iter_start(map* m) {
-	map_iter_index(m) = 0;
-}
-
-bool f_map_iter_has_next(map* m) {
-	if (map_iter_index(m) >= m->cap) {
-		return false;
-	}
-	
-	// lookahead
-	for (size_t i = map_iter_index(m); i < m->cap; i++) {
-		if (m->flags[i] == MAP_FLAG_FULL) {
+	while(hp->flags[index] != MAP_FLAG_OPEN) {
+		if (hp->flags[index] == MAP_FLAG_FULL
+		&& hp->hashes[index] == k_hash) {
 			return true;
 		}
+		index = (index + 1) % hp->cap;
 	}
-	
+
 	return false;
 }
 
-char* f_map_iter_next_key(map* m) {
-    if (!f_map_iter_has_next(m)) {
-        return NULL;
-    }
-    
-    while(m->flags[map_iter_index(m)] != MAP_FLAG_FULL) {
-    	map_iter_index(m)++;
-    }
+static int f_map_get(i_map_header* hp, const char* k) {
+	uint32_t k_hash = f_str_hash(k);
+	size_t index = k_hash % hp->cap;
 
-   	map_iter_index(m)++;
-    return m->keys[map_iter_index(m) - 1];
-}
-
-void f_map_rehash(map* m, size_t new_cap) {
-   	size_t* new_flags = malloc(new_cap * sizeof(size_t));
-    char** new_keys = malloc(new_cap * sizeof(char*));
-   	int* new_values = malloc(new_cap * sizeof(int));
-   	
-    for (size_t i = 0; i < new_cap; ++i) {
-    	new_flags[i] = MAP_FLAG_OPEN;
-    	new_keys[i] = NULL;
-    }
-
-    for (size_t i = 0; i < m->cap; ++i) {
-        if (m->flags[i] == MAP_FLAG_FULL) {
-            size_t index = f_map_str_hash(m->keys[i]) % new_cap;
-            while (new_flags[index] == MAP_FLAG_FULL) {
-				index++;
-				index = index % new_cap;
-            }
-
-            new_flags[index] = m->flags[i];
-            new_keys[index] = m->keys[i];
-            new_values[index] = m->values[i];
-        }
-    }
-
-    free(m->flags);
-    free(m->keys);
-    free(m->values);
-    m->flags = new_flags;
-    m->keys = new_keys;
-    m->values = new_values;
-    m->cap = new_cap;
-}
-
-void f_map_print(map* m) {
-	int full_slots = 0;
-	printf("map<size=%zu, cap=%zu>:\n", m->size, m->cap);
-	for (size_t i = 0; i < m->cap; i++) {
-		size_t flag = m->flags[i];
-		if (flag == MAP_FLAG_OPEN)
-			printf("\t[%zu] <open>\n", i);
-		else if (flag == MAP_FLAG_FULL) {
-			printf("\t[%zu] <'%s':%d>\n", i, m->keys[i], ((int*)m)[i]);
-			full_slots++;
+	while(hp->flags[index] != MAP_FLAG_OPEN) {
+		if (hp->flags[index] == MAP_FLAG_FULL
+		&& hp->hashes[index] == k_hash) {
+			return index;
 		}
-		else if (flag == MAP_FLAG_DELETED)
-			printf("\t[%zu] <deleted>\n", i);
+		index = (index + 1) % hp->cap;
 	}
-	printf("(%d/%zu slots full)\n", full_slots, m->cap);
+
+	return -1;
+}
+
+static void f_map_remove(i_map_header* hp, const char* k) {
+	uint32_t k_hash = f_str_hash(k);
+	size_t index = k_hash % hp->cap;
+
+	while(hp->flags[index] != MAP_FLAG_OPEN) {
+		if (hp->flags[index] == MAP_FLAG_FULL
+		&& hp->hashes[index] == k_hash) {
+	        hp->flags[index] = MAP_FLAG_DELETED;
+	        hp->size--;
+		}
+		index = (index + 1) % hp->cap;
+	}
+}
+
+static void f_map_iter_start(i_map_header* hp) {
+	hp->iter_index = 0;
+	hp->iter_has_next = true;
+}
+
+static bool f_map_iter_has_next(i_map_header* hp) {
+	if (!hp->iter_has_next) {
+		return false;
+	}
+
+	for (size_t i = hp->iter_index; i < hp->cap; i++) {
+		if (hp->flags[i] == MAP_FLAG_FULL) {
+			return true;
+		}
+	}
+	return false;
+}
+
+static const char* f_map_iter_next_key(i_map_header* hp) {
+	if (!hp->iter_has_next) {
+		return NULL;
+	}
+
+	for (size_t i = hp->iter_index; i < hp->cap; i++) {
+		if (hp->flags[i] == MAP_FLAG_FULL) {
+			hp->iter_index = i + 1;
+			return hp->keys[i];
+		}
+	}
+
+	hp->iter_has_next = false;
+	return NULL;
 }
 
 #endif // MAP_H
