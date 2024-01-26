@@ -7,7 +7,7 @@
 
 /*
 
-	This is a very simple static array class in C.
+	array.h - static array
 
 	The type array(T) is defined as T* so you can read and write elements
 	directly, see array_example.c. Just like with pointers, there is no bounds
@@ -20,7 +20,7 @@
 
 	Methods:
 
-	array_new(T, s) -> array(T)         -- Creates a new array with size s
+	array_new(T, s) -> array<T>         -- Creates a new array with size s
 	array_free(a)                       -- Frees all memory in the array
 
 */

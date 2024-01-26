@@ -8,10 +8,12 @@
 
 /*
 
-	This is a simple vector class in C. Only the basic functions are
-	provided and there is no error checking or bounds checking (for example if
-	you call vector_pop or access v[5] when the vector is empty). There are no
-	iterator functions or anything like that, just use a loop with vector_size().
+	vector.h - dynamic array
+
+	Only the basic functions are provided and there is no error checking or
+	bounds checking (for example if you call vector_pop or access v[5] when the
+	vector is empty). There are no iterator functions or anything like that,
+	just use a loop with vector_size().
 
 	The type vector(T) is defined as T* so you can read and write elements
 	directly, see vector_example.c.
@@ -24,7 +26,7 @@
 
 	Methods:
 
-	vector_new(T) -> vector(T)          -- Creates a new vector
+	vector_new(T) -> vector<T>          -- Creates a new vector
 	vector_free(v)                      -- Frees all memory in the vector
 	vector_push(v, T) -> T              -- Push a value and return it
 	vector_pop(v) -> T                  -- Pop a value and return it

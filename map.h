@@ -16,8 +16,8 @@
 	Keys must be const char* (string literals), value can be any type. Before 
 	calling map_get, ensure the key is in the map (using map_contains) or it
 	might segfault. map_find will safely return NULL if the value is not found
-	however. Iteration order is basically random. For more details look at
-	map_example.c.
+	however. Iteration order is basically random. Uses linear probing. For more
+	details look at map_example.c.
 
 	Properties:
 
