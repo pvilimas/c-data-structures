@@ -27,7 +27,7 @@ int main() {
 		vector_push(v, s);
 		printf("size: %zu, cap: %zu\n", vector_size(v), vector_cap(v));
 	}
-	
+
 	while (!vector_is_empty(v)) {
 		st s = vector_pop(v);
 		printf("size: %zu, val: %d, str: %s\n", vector_size(v), s.x, s.c);

@@ -33,6 +33,7 @@
 	
 */
 
+#define VECTOR_INITIAL_CAP 10
 #define VECTOR_RESIZE_FACTOR 2
 
 #define vector(T) T*
@@ -47,7 +48,7 @@
 	(*(((size_t*) (dptr)) - 1))
 
 #define vector_new(T) \
-	((T*) f_vector_new(sizeof(T), 0, 10))
+	((T*) f_vector_new(sizeof(T), 0, VECTOR_INITIAL_CAP))
 
 #define vector_free(v) \
 	f_vector_free((void*)(v))
