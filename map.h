@@ -68,10 +68,11 @@
 #define map_get(vp, k) \
 	(*(vp))[f_map_get(i_map_v2h((vp)), (k))]
 
-#define map_find(vp, k)                                                 \
-	((i_map_v2h(vp)->last_get_index = f_map_get(i_map_v2h((vp)), (k))), \
-	((i_map_v2h(vp)->last_get_index != -1)                              \
-		? ((*vp) + i_map_v2h(vp)->last_get_index) : NULL))
+#define map_find(vp, k)													\
+	((i_map_v2h(vp)->last_get_index = f_map_get(i_map_v2h((vp)), (k))),	\
+	((i_map_v2h(vp)->last_get_index != -1)								\
+		? ((*vp) + i_map_v2h(vp)->last_get_index)						\
+		: NULL))
 
 #define map_remove(vp, k) \
 	f_map_remove(i_map_v2h((vp)), (k))
@@ -230,6 +231,10 @@ static inline bool f_map_contains(i_map_header* hp, const char* k) {
 
 // returns index of key or -1
 static inline int f_map_get(i_map_header* hp, const char* k) {
+	if (hp->size == 0) {
+		return -1;
+	}
+
 	uint32_t k_hash = f_str_hash(k);
 	size_t index = k_hash % hp->cap;
 
