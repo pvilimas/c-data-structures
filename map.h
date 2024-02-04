@@ -39,6 +39,14 @@
 
 */
 
+#define MAP_MAX_LOAD 		0.75
+#define MAP_RESIZE_FACTOR 	4
+#define MAP_INITIAL_CAP 	10
+
+#define MAP_FLAG_OPEN 		0
+#define MAP_FLAG_DELETED 	1
+#define MAP_FLAG_FULL		2
+
 #define map(V) V**
 
 #define map_size(vp) \
@@ -71,14 +79,6 @@
 
 #define map_next(vp) \
 	f_map_next(i_map_v2h((vp)))
-
-#define MAP_MAX_LOAD 		0.75
-#define MAP_RESIZE_FACTOR 	4
-#define MAP_INITIAL_CAP 	10
-
-#define MAP_FLAG_OPEN 		0
-#define MAP_FLAG_DELETED 	1
-#define MAP_FLAG_FULL		2
 
 // memory layout
 typedef struct {
