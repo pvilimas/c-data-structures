@@ -29,6 +29,8 @@
 	vector_free(v)                      -- Frees all memory in the vector
 	vector_push(v, T) -> T              -- Push a value and return it
 	vector_pop(v) -> T                  -- Pop a value and return it
+	vector_insert(v, i, T)              -- Insert a value at index i
+	vector_remove(v, i)					-- Remove value at index i
 	vector_is_empty(v) -> bool          -- Is the vector empty?
 	
 */
@@ -59,13 +61,20 @@
 	(v) = f_vector_try_resize((v)), \
 	(v)[vector_size((v))-1] = (__VA_ARGS__))
 
-#define vector_insert(v, i, ...) 		\
-	(vector_size((v))++, 				\
-	(v) = f_vector_try_resize((v)), 	\
-	(v)[vector_size((v))-1] = (__VA_ARGS__))
-
 #define vector_pop(v) \
 	(vector_size((v))--, (v)[vector_size((v))])
+
+#define vector_insert(v, i, ...)						\
+	(vector_size((v))++,								\
+	(v) = f_vector_try_resize((v)),						\
+	memmove((void*)(v + i + 1), (void*)(v + i),			\
+	vector_elemsize(v) * (vector_size(v) - i - 1)),		\
+	(v)[(i)] = (__VA_ARGS__))
+
+#define vector_remove(v, i) 							\
+	(vector_size((v))--, 								\
+	memmove((void*)(v + i), (void*)(v + i + 1), 		\
+	vector_elemsize(v) * (vector_size(v) - i)))
 
 #define vector_is_empty(v) \
 	(vector_size((v)) == 0)

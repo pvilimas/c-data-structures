@@ -36,7 +36,6 @@
 	Iteration:
 
 	map_next(m) -> const char*          -- Get next key in the map (or NULL)
-	map_next_value(m) -> V*             -- Get next value in the map (or NULL)
 
 */
 
@@ -72,16 +71,6 @@
 
 #define map_next(vp) \
 	f_map_next(i_map_v2h((vp)))
-
-// #define map_next(vp) 													\
-// 	(f_map_next(i_map_v2h((vp))), 										\
-// 	((i_map_v2h((vp))->iter_at_end) 									\
-// 	? NULL : ((i_map_v2h((vp))->keys)[i_map_v2h((vp))->iter_index - 1])))
-
-// #define map_next_value(vp)												\
-// 	(f_map_next(i_map_v2h((vp))), 										\
-// 	((i_map_v2h((vp))->iter_at_end) 									\
-// 	? NULL : ((vp)[i_map_v2h((vp))->iter_index - 1])))
 
 #define MAP_MAX_LOAD 		0.75
 #define MAP_RESIZE_FACTOR 	4
