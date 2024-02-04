@@ -70,9 +70,8 @@
 
 #define map_find(vp, k)                                                 \
 	((i_map_v2h(vp)->last_get_index = f_map_get(i_map_v2h((vp)), (k))), \
-	((i_map_v2h(vp)->last_get_index != -1) 								\
-		? ((*vp) + i_map_v2h(vp)->last_get_index)						\
-		: NULL))
+	((i_map_v2h(vp)->last_get_index != -1)                              \
+		? ((*vp) + i_map_v2h(vp)->last_get_index) : NULL))
 
 #define map_remove(vp, k) \
 	f_map_remove(i_map_v2h((vp)), (k))
