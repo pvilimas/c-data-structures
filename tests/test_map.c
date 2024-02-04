@@ -16,8 +16,10 @@ typedef struct {
 	A A A A A A A A A A A A A A A A A A A A
 #define C \
 	B B B B B B B
+#define D \
+	C C C C C C C
 
-const char* str = C C C C C C;
+const char* str = D D D D D;
 
 #define SIZE strlen(str)
 
@@ -32,6 +34,10 @@ int main() {
 	while(key = map_next(m)) {
 		(void) key;
 	}
+
+	map_insert(m, "", (MyStruct){ .x = "empty key", .y = 1 });
+	printf("%s\n", map_find(m, "")->x);
+
 	map_remove(m, "abc");
 
 	for (size_t i = 0; i < SIZE; i++) {
