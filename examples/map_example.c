@@ -40,12 +40,12 @@ int main() {
 
 	// how to iterate over all keys in the map (order is random):
 	// nested iteration will not work
+	// do not modify the map during iteration
 
 	const char* key;
-	MyStruct* value;
-	while((key = map_next(a))) {
-		value = map_find(a, key);
-		printf("got key '%s' and value %d\n", key, value->x);
+	while((key = map_next(a))) {	
+		MyStruct* value = map_find(a, key);
+		// do something with key and value
 	}
 
 	map_free(a);

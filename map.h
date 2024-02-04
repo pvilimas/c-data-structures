@@ -14,10 +14,10 @@
 	map.h - generic hashmap with string keys
 
 	Keys must be const char* (string literals), value can be any type. Before 
-	calling map_get, ensure the key is in the map (using map_contains) or it
-	might segfault. map_find will safely return NULL if the value is not present
-	however. Iteration order is basically random. Uses linear probing. For more
-	details look at map_example.c.
+	calling map_get, ensure the key is in the map (using map_contains).
+	map_find will safely return NULL if the value is not present however.
+	Iteration order is basically random. Uses linear probing. For more details
+	look at map_example.c.
 
 	Properties:
 
@@ -36,7 +36,7 @@
 	Iteration:
 
 	map_next(m) -> const char*          -- Get next key in the map (or NULL)
-	map_next_value(m) -> V*          	-- Get next key in the map (or NULL)
+	map_next_value(m) -> V*             -- Get next value in the map (or NULL)
 
 */
 
@@ -73,6 +73,16 @@
 #define map_next(vp) \
 	f_map_next(i_map_v2h((vp)))
 
+// #define map_next(vp) 													\
+// 	(f_map_next(i_map_v2h((vp))), 										\
+// 	((i_map_v2h((vp))->iter_at_end) 									\
+// 	? NULL : ((i_map_v2h((vp))->keys)[i_map_v2h((vp))->iter_index - 1])))
+
+// #define map_next_value(vp)												\
+// 	(f_map_next(i_map_v2h((vp))), 										\
+// 	((i_map_v2h((vp))->iter_at_end) 									\
+// 	? NULL : ((vp)[i_map_v2h((vp))->iter_index - 1])))
+
 #define MAP_MAX_LOAD 		0.75
 #define MAP_RESIZE_FACTOR 	4
 #define MAP_INITIAL_CAP 	10
@@ -86,8 +96,8 @@ typedef struct {
 	size_t 			cap;
 	size_t 			size;
 	size_t 			vsize;
-	size_t 			iter_has_next;
 	size_t 			iter_index;
+	size_t 			iter_at_end;
 	int 			last_get_index;
 	uint8_t* 		flags;
 	uint32_t* 		hashes;
@@ -119,7 +129,7 @@ static inline void** f_map_new(size_t cap, size_t size, size_t vsize) {
 		.size = size,
 		.vsize = vsize,
 		.iter_index = 0,
-		.iter_has_next = false,
+		.iter_at_end = true,
 		.flags = calloc(cap, sizeof(uint8_t)),
 		.hashes = calloc(cap, sizeof(uint32_t)),
 		.keys = malloc(cap * sizeof(const char*)),
@@ -148,6 +158,8 @@ static inline i_map_header* f_map_try_rehash(i_map_header* hp) {
 		.cap = new_cap,
 		.size = hp->size,
 		.vsize = hp->vsize,
+		.iter_index = 0,
+		.iter_at_end = true,
 		.flags = calloc(new_cap, sizeof(uint8_t)),
 		.hashes = calloc(new_cap, sizeof(uint32_t)),
 		.keys = malloc(new_cap * sizeof(const char*)),
@@ -263,10 +275,9 @@ static inline void f_map_remove(i_map_header* hp, const char* k) {
 	}
 }
 
-// returns next key
+// returns next index (hp->iter_index-1)
 static inline const char* f_map_next(i_map_header* hp) {
-	if (hp->size == 0) {
-		hp->iter_index = 0;
+	if (hp->size == 0 || hp->iter_index >= hp->cap) {
 		return NULL;
 	}
 

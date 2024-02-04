@@ -30,7 +30,7 @@ int main() {
 
 	const char* key;
 	while(key = map_next(m)) {
-		assert(key);
+		(void) key;
 	}
 	map_remove(m, "abc");
 
@@ -69,10 +69,13 @@ int main() {
 	}
 	assert(size == map_size(m));
 
+	MyStruct* v;
 	for (int i = 0; i < 100; i++) {
 		size = 0;
 		while((key = map_next(m))) {
-			if (key) size++;
+			v = map_find(m, key);
+			assert(v);
+			size++;
 		}
 		assert(size == map_size(m));
 	}
