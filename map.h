@@ -68,7 +68,7 @@
 #define map_get(vp, k) \
 	(*(vp))[f_map_get(i_map_v2h((vp)), (k))]
 
-#define map_find(vp, k)													\
+#define map_find(vp, k)                                                 \
 	((i_map_v2h(vp)->last_get_index = f_map_get(i_map_v2h((vp)), (k))), \
 	((i_map_v2h(vp)->last_get_index != -1) 								\
 		? ((*vp) + i_map_v2h(vp)->last_get_index)						\
@@ -82,16 +82,16 @@
 
 // memory layout
 typedef struct {
-	size_t 			cap;
-	size_t 			size;
-	size_t 			vsize;
-	size_t 			iter_index;
-	size_t 			iter_at_end;
-	int 			last_get_index;
-	uint8_t* 		flags;
-	uint32_t* 		hashes;
-	const char** 	keys;
-	void* 			values; // <-- vptr
+	size_t          cap;
+	size_t          size;
+	size_t          vsize;
+	size_t          iter_index;
+	size_t          iter_at_end;
+	int             last_get_index;
+	uint8_t*        flags;
+	uint32_t*       hashes;
+	const char**    keys;
+	void*           values; // <-- vptr
 } i_map_header;
 
 // header* -> void**
