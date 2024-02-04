@@ -268,7 +268,7 @@ static inline void f_map_remove(i_map_header* hp, const char* k) {
 	}
 }
 
-// returns next index (hp->iter_index-1)
+// return next key
 static inline const char* f_map_next(i_map_header* hp) {
 	if (hp->size == 0 || hp->iter_index >= hp->cap) {
 		return NULL;
