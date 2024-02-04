@@ -18,7 +18,7 @@ int main() {
 
 	// map_insert and map_get return the associated value:
 	printf("value inserted: %d\n", map_insert(a, "hi",
-		(MyStruct){ .s = "hi" }).x);
+		(MyStruct){ .x = 9 }).x);
 	printf("value: %d\n", map_get(a, "hi").x);
 
 	// you can also check if elements are in the map:
@@ -39,22 +39,16 @@ int main() {
 	}
 
 	// how to iterate over all keys in the map (order is random):
+	// nested iteration will not work
 
-	// this function must be called first:
-	map_iter_start(a);
-	// (since there is no separate iterator type, only one iteration can be
-	// in progress at once for each map)
-	while (map_iter_has_next(a)) {
-		// don't call next_key without calling has_next first
-		const char* key = map_iter_next_key(a);
-		// the iterator stuff only gives you keys, but you can easily get values:
-		MyStruct value = map_get(a, key);
-		printf("got key '%s' and value %d\n", key, value.x);
+	const char* key;
+	MyStruct* value;
+	while((key = map_next(a))) {
+		value = map_find(a, key);
+		printf("got key '%s' and value %d\n", key, value->x);
 	}
-	// map_iter_next_key will safely return NULL if there are no more keys
 
 	map_free(a);
-	// map_free(b);
 
 	return 0;
 }

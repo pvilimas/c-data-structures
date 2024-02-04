@@ -59,6 +59,11 @@
 	(v) = f_vector_try_resize((v)), \
 	(v)[vector_size((v))-1] = (__VA_ARGS__))
 
+#define vector_insert(v, i, ...) 		\
+	(vector_size((v))++, 				\
+	(v) = f_vector_try_resize((v)), 	\
+	(v)[vector_size((v))-1] = (__VA_ARGS__))
+
 #define vector_pop(v) \
 	(vector_size((v))--, (v)[vector_size((v))])
 

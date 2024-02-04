@@ -17,7 +17,7 @@ typedef struct {
 #define C \
 	B B B B B B B
 
-const char* str = C C C C C;
+const char* str = C C C C C C;
 
 #define SIZE strlen(str)
 
@@ -27,6 +27,12 @@ int main() {
 	printf("size = %zu\n", (size_t)SIZE);
 
     map(MyStruct) m = map_new(MyStruct);
+
+	const char* key;
+	while(key = map_next(m)) {
+		assert(key);
+	}
+	map_remove(m, "abc");
 
 	for (size_t i = 0; i < SIZE; i++) {
 		map_insert(m, str + i,
@@ -58,12 +64,18 @@ int main() {
 	}
 	
 	size_t size = 0;
-	map_iter_start(m);
-	while(map_iter_has_next(m)) {
-		const char* c = map_iter_next_key(m);
-		if (c) size++;
+	while((key = map_next(m))) {
+		if (key) size++;
 	}
 	assert(size == map_size(m));
+
+	for (int i = 0; i < 100; i++) {
+		size = 0;
+		while((key = map_next(m))) {
+			if (key) size++;
+		}
+		assert(size == map_size(m));
+	}
 
     map_free(m);
 
