@@ -4,7 +4,7 @@
 	- vector.h: dynamic array
 	- map.h: hashmap with string keys
 - What's useful about these?
-	- They're very minimal (like anything in C)
+	- They're very minimal (well suited for C)
 		- Essential functions only
 		- Everything else can be done with a loop
 	- Fully generic, but also
