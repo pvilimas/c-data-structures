@@ -3,7 +3,6 @@
 
 #include <stdint.h>
 #include <stdlib.h>
-#include <stdio.h>
 
 /*
 
@@ -27,12 +26,9 @@
 #define array(T) T*
 
 #define array_elemsize(dptr) \
-	(*(((size_t*) (dptr)) - 3))
-
-#define array_size(dptr) \
 	(*(((size_t*) (dptr)) - 2))
 
-#define array_mode(dptr) \
+#define array_size(dptr) \
 	(*(((size_t*) (dptr)) - 1))
 
 #define array_new(T, sz) \

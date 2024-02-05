@@ -1,5 +1,7 @@
 #include "../vector.h"
 
+#include <stdio.h>
+
 typedef struct {
 	int x;
 	char* c;

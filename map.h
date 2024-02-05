@@ -1,13 +1,11 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include <limits.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
-#include <stdio.h>
 
 /*
 
@@ -53,7 +51,7 @@
 	(i_map_v2h((vp))->size)
 
 #define map_new(V) \
-	(V**) f_map_new(MAP_INITIAL_CAP, 0, sizeof(V))
+	((V**) f_map_new(MAP_INITIAL_CAP, 0, sizeof(V)))
 
 #define map_free(vp) \
 	(f_map_free(i_map_v2h((vp))), (vp) = NULL)
@@ -63,7 +61,7 @@
 	(*(vp))[f_map_insert(i_map_v2h((vp)), (k))] = (__VA_ARGS__))
 
 #define map_contains(vp, k) \
-	f_map_contains(i_map_v2h((vp)), (k))
+	(f_map_contains(i_map_v2h((vp)), (k)))
 
 #define map_get(vp, k) \
 	(*(vp))[f_map_get(i_map_v2h((vp)), (k))]
@@ -75,10 +73,10 @@
 		: NULL))
 
 #define map_remove(vp, k) \
-	f_map_remove(i_map_v2h((vp)), (k))
+	(f_map_remove(i_map_v2h((vp)), (k)))
 
 #define map_next(vp) \
-	f_map_next(i_map_v2h((vp)))
+	(f_map_next(i_map_v2h((vp))))
 
 // memory layout
 typedef struct {
@@ -86,7 +84,7 @@ typedef struct {
 	size_t          size;
 	size_t          vsize;
 	size_t          iter_index;
-	int             last_get_index;
+	int             last_get_index; // save result during map_find
 	uint8_t*        flags;
 	uint32_t*       hashes;
 	const char**    keys;

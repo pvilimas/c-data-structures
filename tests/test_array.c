@@ -1,5 +1,7 @@
 #include "../array.h"
 
+#include <stdio.h>
+
 typedef struct {
 	int x;
 	char* c;
