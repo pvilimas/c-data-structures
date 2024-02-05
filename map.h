@@ -86,7 +86,6 @@ typedef struct {
 	size_t          size;
 	size_t          vsize;
 	size_t          iter_index;
-	size_t          iter_at_end;
 	int             last_get_index;
 	uint8_t*        flags;
 	uint32_t*       hashes;
@@ -118,7 +117,6 @@ static inline void** f_map_new(size_t cap, size_t size, size_t vsize) {
 		.size = size,
 		.vsize = vsize,
 		.iter_index = 0,
-		.iter_at_end = true,
 		.flags = calloc(cap, sizeof(uint8_t)),
 		.hashes = calloc(cap, sizeof(uint32_t)),
 		.keys = malloc(cap * sizeof(const char*)),
@@ -148,7 +146,6 @@ static inline i_map_header* f_map_try_rehash(i_map_header* hp) {
 		.size = hp->size,
 		.vsize = hp->vsize,
 		.iter_index = 0,
-		.iter_at_end = true,
 		.flags = calloc(new_cap, sizeof(uint8_t)),
 		.hashes = calloc(new_cap, sizeof(uint32_t)),
 		.keys = malloc(new_cap * sizeof(const char*)),
@@ -188,6 +185,8 @@ static inline i_map_header* f_map_try_rehash(i_map_header* hp) {
 
 // returns index, value gets set outside
 static inline size_t f_map_insert(i_map_header* hp, const char* k) {
+	hp->iter_index = 0;
+
     uint32_t k_hash = f_str_hash(k);
     size_t index = k_hash % hp->cap;
 
@@ -253,6 +252,8 @@ static inline void f_map_remove(i_map_header* hp, const char* k) {
 	if (hp->size == 0) {
 		return;
 	}
+
+	hp->iter_index = 0;
 
 	uint32_t k_hash = f_str_hash(k);
 	size_t index = k_hash % hp->cap;

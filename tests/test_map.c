@@ -19,7 +19,7 @@ typedef struct {
 #define D \
 	C C C C C C C
 
-const char* str = D D D D D;
+const char* str = C C C C C;
 
 #define SIZE strlen(str)
 
