@@ -1,12 +1,22 @@
 # c-data-structures
-- Simple generic data structures written in C99
+- Header-only library of simple generic data structures written in C99
 	- array.h: static array
 	- vector.h: dynamic array
 	- map.h: hashmap with string keys
-- How to use
-	just copy and paste the header files you need into your folder and include them
 - What's useful about these?
-	- They only have the minimal functions you would need, anything else can be done by looping through them
-	- No need for `init_vector(T);` style macros
-	- In vector and array you can index elements directly just like a pointer, no need for `vec_set(v, 0, 5)` stuff either - `v[0] = 5`
-	- Fully generic, you can put whatever you want in them, not limited to storing pointers
+	- They're very minimal (like anything in C)
+		- Essential functions only
+		- Everything else can be done with a loop
+	- Fully generic, but also
+		- No init macros (`vec_init(MyType);`) or any other boilerplate
+		- Flexible syntax
+			- Supports C99 designated initializers: `vec_push(v, (MyType){...})`
+			- Vector and array elements can be accessed directly: `v[5] = 0;`
+		- Mostly typesafe - uses type aliases, so no typedefs needed
+			- array(T) -> T*
+			- vector(T) -> T*
+			- map(V) -> V**
+- How to use
+	- Just copy the files you want into your project folder and include them
+	- Or I like to `sudo cp ./*.h /usr/local/include`
+	- See `examples/` for how to use
