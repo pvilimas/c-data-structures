@@ -4,15 +4,15 @@
 	- vector.h: dynamic array
 	- map.h: hashmap with string keys
 - What's useful about these?
-	- They're very minimal (like anything in C)
+	- They're very minimal (well suited for C)
 		- Essential functions only
 		- Everything else can be done with a loop
 	- Fully generic, but also
-		- No init macros (`vec_init(MyType);`) or any other boilerplate
+		- No init macros (`vector_init(MyType);`), no typedefs or any other boilerplate meeded
 		- Flexible syntax
-			- Supports C99 designated initializers: `vec_push(v, (MyType){...})`
+			- Supports C99 designated initializers: `vector_push(v, (MyType){...})`
 			- Vector and array elements can be accessed directly: `v[5] = 0;`
-		- Mostly typesafe - uses type aliases, so no typedefs needed
+		- Mostly typesafe - uses type aliases
 			- `array<T> = T*`
 			- `vector<T> = T*`
 			- `map<const char*, V> = V**`
