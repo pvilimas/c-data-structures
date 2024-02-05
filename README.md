@@ -8,9 +8,9 @@
 		- Essential functions only
 		- Everything else can be done with a loop
 	- Fully generic, but also
-		- No init macros (`vec_init(MyType);`) or any other boilerplate
+		- No init macros (`vector_init(MyType);`) or any other boilerplate
 		- Flexible syntax
-			- Supports C99 designated initializers: `vec_push(v, (MyType){...})`
+			- Supports C99 designated initializers: `vector_push(v, (MyType){...})`
 			- Vector and array elements can be accessed directly: `v[5] = 0;`
 		- Mostly typesafe - uses type aliases, so no typedefs needed
 			- `array<T> = T*`
