@@ -30,10 +30,10 @@ int main() {
 
     map(MyStruct) m = map_new(MyStruct);
 
-	const char* key;
-	while(key = map_next(m)) {
-		(void) key;
-	}
+	// while(map_has_next(m)) {
+	// 	const char* key = map_key(m);
+	// 	MyStruct value = map_value(m);
+	// }
 
 	map_insert(m, "", (MyStruct){ .x = "empty key", .y = 1 });
 	printf("%s\n", map_find(m, "")->x);
@@ -69,18 +69,14 @@ int main() {
 		}
 	}
 	
-	size_t size = 0;
-	while((key = map_next(m))) {
-		if (key) size++;
-	}
-	assert(size == map_size(m));
+	size_t size;
 
-	MyStruct* v;
 	for (int i = 0; i < 100; i++) {
 		size = 0;
-		while((key = map_next(m))) {
-			v = map_find(m, key);
-			assert(v);
+		while(map_has_next(m)) {
+			const char* key = map_key(m);
+			MyStruct value = map_value(m);
+			// printf("str<len=%zu> : %d\n", strlen(key), value.y);
 			size++;
 		}
 		assert(size == map_size(m));

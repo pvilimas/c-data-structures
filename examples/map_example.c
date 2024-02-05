@@ -42,9 +42,9 @@ int main() {
 	// nested iteration will not work
 	// do not modify the map during iteration
 
-	const char* key;
-	while((key = map_next(a))) {	
-		MyStruct* value = map_find(a, key);
+	while(map_has_next(a)) {
+		const char* key = map_key(a);
+		MyStruct value = map_value(a);
 		// do something with key and value
 	}
 

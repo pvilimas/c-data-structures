@@ -38,8 +38,8 @@
 */
 
 #define MAP_MAX_LOAD 		0.75
-#define MAP_RESIZE_FACTOR 	4
 #define MAP_INITIAL_CAP 	10
+#define MAP_RESIZE_FACTOR 	4
 
 #define MAP_FLAG_OPEN 		0
 #define MAP_FLAG_DELETED 	1
@@ -67,16 +67,22 @@
 	(*(vp))[f_map_get(i_map_v2h((vp)), (k))]
 
 #define map_find(vp, k)													\
-	((i_map_v2h(vp)->last_get_index = f_map_get(i_map_v2h((vp)), (k))),	\
-	((i_map_v2h(vp)->last_get_index != -1)								\
-		? ((*vp) + i_map_v2h(vp)->last_get_index)						\
+	((i_map_v2h((vp))->last_get_index = f_map_get(i_map_v2h((vp)), (k))),	\
+	((i_map_v2h((vp))->last_get_index != -1)								\
+		? ((*(vp)) + i_map_v2h((vp))->last_get_index)						\
 		: NULL))
 
 #define map_remove(vp, k) \
 	(f_map_remove(i_map_v2h((vp)), (k)))
 
-#define map_next(vp) \
-	(f_map_next(i_map_v2h((vp))))
+#define map_has_next(vp) \
+	(f_map_has_next(i_map_v2h((vp))))
+
+#define map_key(vp) \
+	(i_map_v2h(vp)->keys[i_map_v2h(vp)->iter_index - 1])
+
+#define map_value(vp) \
+	((*vp)[i_map_v2h(vp)->iter_index - 1])
 
 // memory layout
 typedef struct {
@@ -84,6 +90,7 @@ typedef struct {
 	size_t          size;
 	size_t          vsize;
 	size_t          iter_index;
+	size_t			iter_last_error; // 1 if map_next last returned null
 	int             last_get_index; // save result during map_find
 	uint8_t*        flags;
 	uint32_t*       hashes;
@@ -267,21 +274,28 @@ static inline void f_map_remove(i_map_header* hp, const char* k) {
 	}
 }
 
-// return next key
-static inline const char* f_map_next(i_map_header* hp) {
+// set iter_index and last_error
+static inline bool f_map_has_next(i_map_header* hp) {
+	if (hp->iter_last_error) {
+		hp->iter_index = 0;
+		hp->iter_last_error = false;
+	}
+
 	if (hp->size == 0 || hp->iter_index >= hp->cap) {
-		return NULL;
+		hp->iter_last_error = true;
+		return false;
 	}
 
 	for (size_t i = hp->iter_index; i < hp->cap; i++) {
 		if (hp->flags[i] == MAP_FLAG_FULL) {
 			hp->iter_index = i + 1;
-			return hp->keys[i];
+			hp->iter_last_error = false;
+			return true;
 		}
 	}
 
-	hp->iter_index = 0;
-	return NULL;
+	hp->iter_last_error = true;
+	return false;
 }
 
 #endif // MAP_H
