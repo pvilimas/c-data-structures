@@ -42,10 +42,18 @@ int main() {
 	// nested iteration will not work
 	// do not modify the map during iteration
 
+	// call has_next to iterate to the next key-value pair
 	while(map_has_next(a)) {
+		// then use these functions to get the current key or value
 		const char* key = map_key(a);
 		MyStruct value = map_value(a);
+		
 		// do something with key and value
+		if (value.x == 5) {
+			// always call this function when breaking from a loop
+			map_iter_stop(a);
+			break;
+		}
 	}
 
 	map_free(a);

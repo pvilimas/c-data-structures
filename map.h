@@ -33,7 +33,10 @@
 
 	Iteration:
 
-	map_next(m) -> const char*          -- Get next key in the map (or NULL)
+	map_has_next(m) -> bool             -- Are there any keys left to iterate?
+	map_key(m) -> const char*			-- Get current key
+	map_value(m) -> V					-- Get current value
+	map_iter_stop(m)                    -- Call this function when using break
 
 */
 
@@ -79,10 +82,13 @@
 	(f_map_has_next(i_map_v2h((vp))))
 
 #define map_key(vp) \
-	(i_map_v2h(vp)->keys[i_map_v2h(vp)->iter_index - 1])
+	(i_map_v2h((vp))->keys[i_map_v2h((vp))->iter_index - 1])
 
 #define map_value(vp) \
-	((*vp)[i_map_v2h(vp)->iter_index - 1])
+	((*(vp))[i_map_v2h((vp))->iter_index - 1])
+
+#define map_iter_stop(vp) \
+	(i_map_v2h((vp))->iter_index = 0, i_map_v2h((vp))->iter_last_error = false)
 
 // memory layout
 typedef struct {

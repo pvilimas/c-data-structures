@@ -9,9 +9,10 @@
 		- Everything else can be done with a loop
 	- Fully generic, but also
 		- No init/declaration macros (`vector_init(MyType);`), no typedefs or any other boilerplate meeded
-		- Flexible syntax
+		- Flexible syntax that somewhat resembles Java or C++ data types
 			- Supports C99 designated initializers: `vector_push(v, (MyType){...})`
 			- Vector and array elements can be accessed directly: `v[5] = 0;`
+			- Map iteration is very simple and efficient
 		- Mostly typesafe - uses type aliases
 			- `array<T> = T*`
 			- `vector<T> = T*`

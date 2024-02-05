@@ -34,6 +34,10 @@ int main() {
             const char* key = map_key(m);
             int value = map_value(m);
             size++;
+            if (size == 3) {
+                map_iter_stop(m);
+                break;
+            }
         }
         printf("%d\n", size);
     }
