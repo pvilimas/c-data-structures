@@ -38,9 +38,15 @@ int main() {
 		map_insert(a, str + i, (MyStruct) { .s = str + i, .x = i });
 	}
 
-	// how to iterate over all keys in the map (order is random):
-	// nested iteration will not work
-	// do not modify the map during iteration
+	// iteration example
+
+	// this map does not use a separate iterator type, only internal state
+	// for controlling the iteration
+	
+	// this means nested loops will not work
+	// also do not modify the map during iteration
+	// before using break, always call map_iter_stop to reset everything
+	// this is not needed otherwise though
 
 	// call has_next to iterate to the next key-value pair
 	while(map_has_next(a)) {
@@ -54,6 +60,24 @@ int main() {
 			map_iter_stop(a);
 			break;
 		}
+	}
+
+	// the map will reset everything IF you do not exit early from a loop, so
+	// this is ok:
+
+	while(map_has_next(a)) {
+		const char* key = map_key(a);
+		MyStruct value = map_value(a);
+	}
+
+	while(map_has_next(a)) {
+		const char* key = map_key(a);
+		MyStruct value = map_value(a);
+	}
+
+	while(map_has_next(a)) {
+		const char* key = map_key(a);
+		MyStruct value = map_value(a);
 	}
 
 	map_free(a);
