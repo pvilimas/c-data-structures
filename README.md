@@ -13,9 +13,9 @@
 			- Supports C99 designated initializers: `vec_push(v, (MyType){...})`
 			- Vector and array elements can be accessed directly: `v[5] = 0;`
 		- Mostly typesafe - uses type aliases, so no typedefs needed
-			- array(T) -> T*
-			- vector(T) -> T*
-			- map(V) -> V**
+			- `array<T> = T*`
+			- `vector<T> = T*`
+			- `map<const char*, V> = V**`
 - How to use
 	- Just copy the files you want into your project folder and include them
 	- Or I like to `sudo cp ./*.h /usr/local/include`
