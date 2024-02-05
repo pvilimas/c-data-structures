@@ -34,8 +34,8 @@
 	Iteration:
 
 	map_has_next(m) -> bool             -- Are there any keys left to iterate?
-	map_key(m) -> const char*			-- Get current key
-	map_value(m) -> V					-- Get current value
+	map_key(m) -> const char*           -- Get current key
+	map_value(m) -> V                   -- Get current value
 	map_iter_stop(m)                    -- Call this function when using break
 
 */
@@ -69,10 +69,10 @@
 #define map_get(vp, k) \
 	(*(vp))[f_map_get(i_map_v2h((vp)), (k))]
 
-#define map_find(vp, k)													\
-	((i_map_v2h((vp))->last_get_index = f_map_get(i_map_v2h((vp)), (k))),	\
-	((i_map_v2h((vp))->last_get_index != -1)								\
-		? ((*(vp)) + i_map_v2h((vp))->last_get_index)						\
+#define map_find(vp, k)                                                     \
+	((i_map_v2h((vp))->last_get_index = f_map_get(i_map_v2h((vp)), (k))),   \
+	((i_map_v2h((vp))->last_get_index != -1)                                \
+		? ((*(vp)) + i_map_v2h((vp))->last_get_index)                       \
 		: NULL))
 
 #define map_remove(vp, k) \
@@ -96,7 +96,7 @@ typedef struct {
 	size_t          size;
 	size_t          vsize;
 	size_t          iter_index;
-	size_t			iter_last_error; // 1 if map_next last returned null
+	size_t          iter_last_error; // 1 if map_next last returned null
 	int             last_get_index; // save result during map_find
 	uint8_t*        flags;
 	uint32_t*       hashes;
