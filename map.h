@@ -71,7 +71,7 @@
 	(f_map_contains(i_map_v2h((vp)), (k)))
 
 #define map_get(vp, k) \
-	(*(vp))[f_map_get(i_map_v2h((vp)), (k))]
+	((*(vp))[f_map_get(i_map_v2h((vp)), (k))])
 
 #define map_find(vp, k)                                                     \
 	((i_map_v2h((vp))->last_get_index = f_map_get(i_map_v2h((vp)), (k))),   \
