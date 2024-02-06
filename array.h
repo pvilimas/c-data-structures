@@ -14,9 +14,10 @@
 
 	Methods:
 
+	array_size(a) -> size_t             -- Returns the size of the array
+
 	array_new(T, s) -> array<T>         -- Creates a new array with size s
 	array_free(a)                       -- Frees all memory in the array
-	array_size(a) -> size_t             -- Returns the size of the array
 
 */
 

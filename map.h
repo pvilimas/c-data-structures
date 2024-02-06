@@ -25,9 +25,10 @@
 
 	Methods:
 
+	map_size(m) -> size_t               -- Returns the size of the map
+
 	map_new(V, f) -> m   				-- Create a new map
 	map_free(m)                         -- Free all memory in the map
-	map_size(m) -> size_t               -- Returns the size of the map
 	map_insert(m, k, V) -> V            -- Insert a key-value pair into the map
 	map_contains(m, k) -> bool          -- Is this key contained in the map?
 	map_get(m, k) -> V                  -- Get the value (MUST BE IN THE MAP)
@@ -56,8 +57,8 @@
 #define map_size(vp) \
 	(i_map_v2h((vp))->size)
 
-#define map_new(V, v_free) \
-	((V**) f_map_new(MAP_INITIAL_CAP, 0, sizeof(V), v_free))
+#define map_new(V, vf) \
+	((V**) f_map_new(MAP_INITIAL_CAP, 0, sizeof(V), vf))
 
 #define map_free(vp) \
 	(f_map_free(i_map_v2h((vp))), (vp) = NULL)

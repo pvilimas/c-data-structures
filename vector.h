@@ -19,15 +19,16 @@
 
 	Methods:
 
+	vector_size(v) -> size_t            -- Returns the size of the vector
+	vector_cap(v) -> size_t             -- Returns the capacity of the vector
+	vector_is_empty(v) -> bool          -- Is the size equal to zero?
+
 	vector_new(T) -> vector<T>          -- Creates a new vector
 	vector_free(v)                      -- Frees all memory in the vector
 	vector_push(v, T) -> T              -- Push a value and return it
 	vector_pop(v) -> T                  -- Pop a value and return it
 	vector_insert(v, i, T)              -- Insert a value at index i
 	vector_remove(v, i)                 -- Remove value at index i
-	vector_is_empty(v) -> bool          -- Is the vector empty?
-	vector_size(v) -> size_t            -- Returns the size of the vector
-	vector_cap(v) -> size_t             -- Returns the capacity of the vector
 	
 */
 
