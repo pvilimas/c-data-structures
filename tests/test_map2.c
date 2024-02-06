@@ -18,21 +18,21 @@ int main() {
 
     while(map_has_next(m)) {
 		const char* key = map_key(m);
-		int value = map_value(m);
-        printf("%s : %d\n", key, value);
+		int* value = map_value(m);
+        printf("%s : %d\n", key, *value);
 	}
 
     while(map_has_next(m)) {
 		const char* key = map_key(m);
-		int value = map_value(m);
-        printf("%s : %d\n", key, value);
+		int* value = map_value(m);
+        printf("%s : %d\n", key, *value);
 	}
 
     for (int i = 0; i < 100; i++) {
         size = 0;
         while(map_has_next(m)) {
             const char* key = map_key(m);
-            int value = map_value(m);
+            int* value = map_value(m);
             size++;
             if (size == 3) {
                 map_iter_stop(m);

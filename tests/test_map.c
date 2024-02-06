@@ -75,7 +75,7 @@ int main() {
 		size = 0;
 		while(map_has_next(m)) {
 			const char* key = map_key(m);
-			MyStruct value = map_value(m);
+			MyStruct* value = map_value(m);
 			// printf("str<len=%zu> : %d\n", strlen(key), value.y);
 			size++;
 		}

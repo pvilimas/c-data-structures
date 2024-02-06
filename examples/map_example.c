@@ -52,10 +52,10 @@ int main() {
 	while(map_has_next(a)) {
 		// then use these functions to get the current key or value
 		const char* key = map_key(a);
-		MyStruct value = map_value(a);
+		MyStruct* value = map_value(a);
 		
 		// do something with key and value
-		if (value.x == 5) {
+		if (value->x == 5) {
 			// always call this function when breaking from a loop
 			map_iter_stop(a);
 			break;
@@ -67,17 +67,17 @@ int main() {
 
 	while(map_has_next(a)) {
 		const char* key = map_key(a);
-		MyStruct value = map_value(a);
+		MyStruct* value = map_value(a);
 	}
 
 	while(map_has_next(a)) {
 		const char* key = map_key(a);
-		MyStruct value = map_value(a);
+		MyStruct* value = map_value(a);
 	}
 
 	while(map_has_next(a)) {
 		const char* key = map_key(a);
-		MyStruct value = map_value(a);
+		MyStruct* value = map_value(a);
 	}
 
 	map_free(a);
