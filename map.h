@@ -38,7 +38,7 @@
 	Iteration:
 
 	map_has_next(m) -> bool             -- Are there any keys left to iterate?
-	map_key(m) -> const char*           -- Get current key
+	map_key(m) -> k                     -- Get current key
 	map_value(m) -> V*                  -- Get current value
 	map_iter_stop(m)                    -- Call this function when using break
 
