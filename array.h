@@ -12,14 +12,11 @@
 	directly, see array_example.c. Just like with pointers, there is no bounds
 	checking.
 
-	Properties:
-
-	array_size(a) -> size_t             -- Returns the size of the array
-
 	Methods:
 
 	array_new(T, s) -> array<T>         -- Creates a new array with size s
 	array_free(a)                       -- Frees all memory in the array
+	array_size(a) -> size_t             -- Returns the size of the array
 
 */
 

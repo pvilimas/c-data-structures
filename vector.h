@@ -17,11 +17,6 @@
 	The type vector(T) is defined as T* so you can read and write elements
 	directly, see vector_example.c.
 
-	Properties:
-
-	vector_size(v) -> size_t            -- Returns the size of the vector
-	vector_cap(v) -> size_t             -- Returns the capacity of the vector
-
 	Methods:
 
 	vector_new(T) -> vector<T>          -- Creates a new vector
@@ -31,6 +26,8 @@
 	vector_insert(v, i, T)              -- Insert a value at index i
 	vector_remove(v, i)                 -- Remove value at index i
 	vector_is_empty(v) -> bool          -- Is the vector empty?
+	vector_size(v) -> size_t            -- Returns the size of the vector
+	vector_cap(v) -> size_t             -- Returns the capacity of the vector
 	
 */
 

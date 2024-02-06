@@ -18,19 +18,16 @@
 	Iteration order is basically random. Uses linear probing. For more details
 	look at map_example.c.
 
-	Properties:
-
-	map_size(m) -> size_t               -- Returns the size of the map
-
-	Methods:
-
 	m (map type) 			= map<const char*, V>
 	k (key type)			= const char*
 	V (value type)			= whatever you pass to map_new
 	f (value free function) = void* -> ()
 
+	Methods:
+
 	map_new(V, f) -> m   				-- Create a new map
 	map_free(m)                         -- Free all memory in the map
+	map_size(m) -> size_t               -- Returns the size of the map
 	map_insert(m, k, V) -> V            -- Insert a key-value pair into the map
 	map_contains(m, k) -> bool          -- Is this key contained in the map?
 	map_get(m, k) -> V                  -- Get the value (MUST BE IN THE MAP)
