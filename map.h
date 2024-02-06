@@ -58,7 +58,7 @@
 	(i_map_v2h((vp))->size)
 
 #define map_new(V, vf) \
-	((V**) f_map_new(MAP_INITIAL_CAP, 0, sizeof(V), vf))
+	((V**) f_map_new(MAP_INITIAL_CAP, 0, sizeof(V), (vf)))
 
 #define map_free(vp) \
 	(f_map_free(i_map_v2h((vp))), (vp) = NULL)
