@@ -46,7 +46,7 @@ int main() {
 	// this means nested loops will not work
 	// also do not modify the map during iteration
 	// before using break, always call map_iter_stop to reset everything
-	// this is not needed otherwise though
+	// this is not needed otherwise though, see below
 
 	// call has_next to iterate to the next key-value pair
 	while(map_has_next(a)) {

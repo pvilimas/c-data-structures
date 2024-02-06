@@ -32,7 +32,6 @@ int main() {
 	}
 
 	// to iterate over the vector, the vector_size macro can be used:
-	// (note that this returns size_t, casted it here to avoid compiler warning)
 	for (int i = 0; i < (int)vector_size(a); i++) {
 		a[i] = (MyStruct){ .s = "abcdef" + i, .x = i };
 	}

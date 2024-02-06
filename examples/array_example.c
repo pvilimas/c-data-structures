@@ -21,7 +21,6 @@ int main() {
 	printf("%d\n", a[3].x);
 
 	// to iterate over the array, the array_size macro can be used:
-	// (note that this returns size_t, casted it here to avoid compiler warning)
 	for (int i = 0; i < (int)array_size(a); i++) {
 		b[i] = (MyStruct){ .s = "abcdef" + i, .x = i };
 		printf("%d: %s\n", b[i].x, b[i].s);
