@@ -74,13 +74,25 @@ int main() {
 	for (int i = 0; i < 100; i++) {
 		size = 0;
 		while(map_has_next(m)) {
-			const char* key = map_key(m);
 			MyStruct* value = map_value(m);
-			// printf("str<len=%zu> : %d\n", strlen(key), value.y);
+			value->y = i;
 			size++;
 		}
 		assert(size == map_size(m));
 	}
+
+	while(map_has_next(m)) {
+		MyStruct* value = map_value(m);
+		value->y = 95;
+	}
+
+	size = 0;
+	while(map_has_next(m)) {
+		MyStruct* value = map_value(m);
+		assert(value->y == 95);
+		size++;
+	}
+	assert(size == map_size(m));
 
     map_free(m);
 
