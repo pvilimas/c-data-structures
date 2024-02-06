@@ -9,6 +9,7 @@
 		- Everything else can be done with a loop
 	- Fully generic, but also
 		- No init/declaration macros (`vector_init(MyType);`), no typedefs or any other boilerplate meeded
+		- No unnecessary casting: `*(int*) map_get(m, "abc")`
 		- Flexible syntax that somewhat resembles Java or C++ data types
 			- Supports C99 designated initializers: `vector_push(v, (MyType){...})`
 			- Vector and array elements can be accessed directly: `v[5] = 0;`

@@ -5,12 +5,29 @@
 typedef struct {
 	const char* s;
 	int x;
+	void* data;
 } MyStruct;
+
+MyStruct MyStruct_new(const char* s, int x) {
+	return (MyStruct) {
+		.s = s,
+		.x = x,
+		.data = malloc(100)
+	};
+}
+
+void MyStruct_free(void* p) {
+	MyStruct* m = (MyStruct*)p;
+	printf("freeing %d\n", m->x);
+	free(m->data);
+}
 
 int main() {
 
-	// this is a valid declaration:
-	map(MyStruct) a = map_new(MyStruct);
+	// this is a valid declaration (passing value free fn):
+	// value free fn is called when a key is removed, or when the whole
+	// map gets freed
+	map(MyStruct) a = map_new(MyStruct, MyStruct_free);
 
 	// but these are not:
 	// MyStruct* b = map_new(MyStruct);
@@ -18,7 +35,7 @@ int main() {
 
 	// map_insert and map_get return the associated value:
 	printf("value inserted: %d\n", map_insert(a, "hi",
-		(MyStruct){ .x = 9 }).x);
+		MyStruct_new("", 9)).x);
 	printf("value: %d\n", map_get(a, "hi").x);
 
 	// you can also check if elements are in the map:

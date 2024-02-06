@@ -9,7 +9,7 @@ int main() {
 
     int size;
 
-    map(int) m = map_new(int);
+    map(int) m = map_new(int, NULL);
     map_insert(m, "a", 5);
     map_insert(m, "ab", 6);
     map_insert(m, "abc", 7);

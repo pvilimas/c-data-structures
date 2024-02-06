@@ -28,7 +28,7 @@ int main() {
 	printf("strlen = %zu\n", strlen(str));
 	printf("size = %zu\n", (size_t)SIZE);
 
-    map(MyStruct) m = map_new(MyStruct);
+    map(MyStruct) m = map_new(MyStruct, NULL);
 
 	// while(map_has_next(m)) {
 	// 	const char* key = map_key(m);
