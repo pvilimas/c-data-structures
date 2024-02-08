@@ -33,7 +33,7 @@ int main() {
 	for (int i = 0; i < 5; i++) {
 		st s = (st){99,"abc"};
 		vector_insert(v, 3, s);
-		// printf("size: %zu, val: %d, str: %s\n", vector_size(v), s.x, s.c);
+		printf("size: %zu, val: %d, str: %s\n", vector_size(v), s.x, s.c);
 	}
 
 	printf("---\n");
