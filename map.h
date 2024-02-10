@@ -18,18 +18,19 @@
 	Iteration order is basically random. Uses linear probing. For more details
 	look at map_example.c.
 
-	m (map type) 			= map<const char*, V>
-	k (key type)			= const char*
-	V (value type)			= whatever you pass to map_new
+	m (map type)            = map<const char*, V>
+	k (key type)            = const char*
+	V (value type)          = whatever you pass to map_new
 	f (value free function) = void* -> ()
 
 	Methods:
 
 	map_size(m) -> size_t               -- Returns the size of the map
 
-	map_new(V, f) -> m   				-- Create a new map
+	map_new(V, f) -> m                  -- Create a new map
 	map_free(m)                         -- Free all memory in the map
 	map_insert(m, k, V) -> V            -- Insert a key-value pair into the map
+	map_zip(m, V, initlist)           	-- Add items from an initializer list
 	map_contains(m, k) -> bool          -- Is this key contained in the map?
 	map_get(m, k) -> V                  -- Get the value (MUST BE IN THE MAP)
 	map_find(m, k) -> V*                -- Get a ptr to the value (or NULL)
@@ -66,6 +67,15 @@
 #define map_insert(vp, k, ...) \
 	(*(void***)(&(vp)) = (void**)i_map_h2v(f_map_try_rehash(i_map_v2h((vp)))), \
 	(*(vp))[f_map_insert(i_map_v2h((vp)), (k))] = (__VA_ARGS__))
+
+#define map_zip(vp, V, ...) \
+	do { \
+		struct { const char* key; V value; } initlist[] = __VA_ARGS__; \
+		size_t n = sizeof(initlist) / sizeof(initlist[0]); \
+		for (size_t i = 0; i < n; i++) { \
+			map_insert(vp, initlist[i].key, initlist[i].value); \
+		} \
+	} while(0)
 
 #define map_contains(vp, k) \
 	(f_map_contains(i_map_v2h((vp)), (k)))

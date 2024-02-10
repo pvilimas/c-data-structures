@@ -23,6 +23,8 @@ const char* str = C C C C C;
 
 #define SIZE strlen(str)
 
+// test everything
+
 int main() {
 
 	printf("strlen = %zu\n", strlen(str));

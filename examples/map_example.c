@@ -29,6 +29,9 @@ int main() {
 	// map gets freed
 	map(MyStruct) a = map_new(MyStruct, MyStruct_free);
 
+	// this is also valid:
+	map(int) b = map_new(int, NULL);
+
 	// but these are not:
 	// MyStruct* b = map_new(MyStruct);
 	// void* c = map_new(MyStruct);
@@ -99,5 +102,23 @@ int main() {
 
 	map_free(a);
 
+	// map_zip can be used as a shorthand for initializing a map
+
+	map(MyStruct) c = map_new(MyStruct, MyStruct_free);
+	map_zip(c, MyStruct, {
+		{"abc", MyStruct_new("5", 5)},
+		{"def", MyStruct_new("6", 6)},
+		{"ghi", MyStruct_new("7", 7)},
+	});
+
+	while(map_has_next(c)) {
+		const char* key = map_key(c);
+		MyStruct* value = map_value(c);
+		printf("%s : %d\n", key, value->x);
+	}
+
+	map_free(b);
+	map_free(c);
+	
 	return 0;
 }
