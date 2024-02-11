@@ -102,11 +102,11 @@ int main() {
 
 	map_free(a);
 
-	// map_zip can be used as a shorthand for initializing a map
+	// map_load can be used as a shorthand for initializing a map
 	// initializer list should be array of `struct {const char* k; V v;}`
 
 	map(MyStruct) c = map_new(MyStruct, MyStruct_free);
-	map_zip(c, MyStruct, {
+	map_insert_from(c, MyStruct, {
 		{"abc", MyStruct_new("5", 5)},
 		{"def", MyStruct_new("6", 6)},
 		{"ghi", MyStruct_new("7", 7)},

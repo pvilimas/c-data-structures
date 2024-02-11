@@ -30,7 +30,7 @@
 	map_new(V, f) -> m                  -- Create a new map
 	map_free(m)                         -- Free all memory in the map
 	map_insert(m, k, V) -> V            -- Insert a key-value pair into the map
-	map_zip(m, V, initlist)           	-- Add items from an initializer list
+	map_insert_from(m, V, initlist)		-- Add items from an initializer list
 	map_contains(m, k) -> bool          -- Is this key contained in the map?
 	map_get(m, k) -> V                  -- Get the value (MUST BE IN THE MAP)
 	map_find(m, k) -> V*                -- Get a ptr to the value (or NULL)
@@ -53,6 +53,8 @@
 #define MAP_FLAG_DELETED 	1
 #define MAP_FLAG_FULL		2
 
+// methods
+
 #define map(V) V**
 
 #define map_size(vp) \
@@ -68,7 +70,7 @@
 	(*(void***)(&(vp)) = (void**)i_map_h2v(f_map_try_rehash(i_map_v2h((vp)))), \
 	(*(vp))[f_map_insert(i_map_v2h((vp)), (k))] = (__VA_ARGS__))
 
-#define map_zip(vp, V, ...) \
+#define map_insert_from(vp, V, ...) \
 	do { \
 		struct { const char* key; V value; } initlist[] = __VA_ARGS__; \
 		size_t n = sizeof(initlist) / sizeof(initlist[0]); \
@@ -104,6 +106,8 @@
 #define map_iter_stop(vp) \
 	(i_map_v2h((vp))->iter_index = 0)
 
+// internal
+
 // memory layout
 typedef struct {
 	size_t          cap;
@@ -125,6 +129,8 @@ typedef struct {
 // V** -> header*
 #define i_map_v2h(vptr) \
 	((i_map_header*)((char*)(vptr) - offsetof(i_map_header, values)))
+
+// impls
 
 static inline uint32_t f_str_hash(const char* str) {
     uint32_t hash = 5381;
