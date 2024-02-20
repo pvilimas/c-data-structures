@@ -27,5 +27,19 @@ int main() {
 
     map_free(m);
 
+    map(Data) m2 = map_new(Data, free_data);
+    map_insert_from(m2, Data, {
+        {"a", (Data){.p=malloc(100), .s=100}},
+        {"ab", (Data){.p=malloc(300), .s=300}},
+        {"abc", (Data){.p=malloc(500), .s=500}},
+        {"abcd", (Data){.p=malloc(700), .s=700}}
+    });
+
+    while (map_has_next(m2)) {
+        printf("%s : %d\n", map_key(m2), map_value(m2)->s);
+    }
+
+    map_free(m2);
+
     return 0;
 }

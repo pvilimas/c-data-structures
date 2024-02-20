@@ -141,7 +141,7 @@ static inline uint32_t f_str_hash(const char* str) {
     return hash;
 }
 
-static inline void** f_map_new(size_t cap, size_t size, size_t vsize,
+static inline char** f_map_new(size_t cap, size_t size, size_t vsize,
 void (*value_free_fn)(void*)) {
 	i_map_header* hp = malloc(sizeof(i_map_header));
 	*hp = (i_map_header) {
