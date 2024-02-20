@@ -119,12 +119,12 @@ typedef struct {
 	uint8_t*        flags;
 	uint32_t*       hashes;
 	const char**    keys;
-	void*           values; // <-- vptr
+	char*           values; // <-- vptr
 } i_map_header;
 
-// header* -> void**
+// header* -> char**
 #define i_map_h2v(hptr) \
-	(void**)((char*)(hptr) + offsetof(i_map_header, values))
+	(char**)((char*)(hptr) + offsetof(i_map_header, values))
 
 // V** -> header*
 #define i_map_v2h(vptr) \
